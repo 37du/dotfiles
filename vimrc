@@ -1,4 +1,4 @@
-" A sensible vimrc for common development
+" A sensible vimrc for go development
 
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
@@ -21,6 +21,12 @@ Plugin 'Xuyuanp/nerdtree-git-plugin'
 Plugin 'fatih/molokai'
 Plugin 'mileszs/ack.vim'
 Plugin 'ianva/vim-youdao-translater'
+Plugin 'fatih/vim-go'
+Plugin 'rjohnsondev/vim-compiler-go'
+Plugin 'dgryski/vim-godef'
+Plugin 'vim-jp/vim-go-extra'
+Plugin 'tpope/vim-dispatch'
+Plugin 'ctrlpvim/ctrlp.vim'
 
 call vundle#end()
 filetype plugin indent on
@@ -287,3 +293,134 @@ call NERDTreeHighlightFile('php', 'Magenta', 'none', '#ff00ff', '#151515')
 """"""""""""""vim-youdao-translater"""""""""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""
 noremap <leader>yd :<C-u>Yde<CR>
+
+
+"""""""""""""""go-tagbar setting""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""
+let g:tagbar_type_go = {
+    \ 'ctagstype' : 'go',
+    \ 'kinds'     : [
+        \ 'p:package',
+        \ 'i:imports:1',
+        \ 'c:constants',
+        \ 'v:variables',
+        \ 't:types',
+        \ 'n:interfaces',
+        \ 'w:fields',
+        \ 'e:embedded',
+        \ 'm:methods',
+        \ 'r:constructor',
+        \ 'f:functions'
+    \ ],
+    \ 'sro' : '.',
+    \ 'kind2scope' : {
+        \ 't' : 'ctype',
+        \ 'n' : 'ntype'
+    \ },
+    \ 'scope2kind' : {
+        \ 'ctype' : 't',
+        \ 'ntype' : 'n'
+    \ },
+    \ 'ctagsbin'  : 'gotags',
+    \ 'ctagsargs' : '-sort -silent'
+\ }
+
+
+"""""""""""""""vim-go"""""""""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""
+let g:go_fmt_command = "goimports"
+let g:go_autodetect_gopath = 1
+let g:go_list_type = "quickfix"
+
+let g:go_highlight_types = 1
+let g:go_highlight_fields = 1
+let g:go_highlight_functions = 1
+let g:go_highlight_methods = 1
+let g:go_highlight_extra_types = 1
+let g:go_highlight_generate_tags = 1
+
+" Open :GoDeclsDir with ctrl-g
+nmap <C-g> :GoDeclsDir<cr>
+imap <C-g> <esc>:<C-u>GoDeclsDir<cr>
+"let g:go_highlight_structs = 1
+"let g:go_highlight_interfaces = 1
+"let g:go_highlight_operators = 1
+"let g:go_highlight_build_constraints = 1
+"let g:go_fmt_fail_silently = 1
+"let g:go_play_open_browser = 0
+"let g:go_get_update = 0
+"let g:go_def_mode = 'godef'
+"let g:go_auto_type_info = 1
+"set updatetime=100
+"let g:go_auto_sameids = 1
+
+let g:golang_goroot="/usr/local/go"
+let g:syntastic_go_checkers = ['golint', 'govet', 'errcheck']
+let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['go'] }
+
+"vim-godef
+let g:godef_split=0
+let g:godef_same_file_in_same_window=1
+
+"vim lint
+let g:go_metalinter_enabled = ['vet', 'golint', 'errcheck']
+let g:go_metalinter_autosave = 1
+let g:go_metalinter_autosave_enabled = ['vet', 'golint']
+let g:go_metalinter_deadline = "5s"
+
+augroup go
+  autocmd!
+
+  " Show by default 4 spaces for a tab
+  autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=4 shiftwidth=4 
+
+  " :GoBuild and :GoTestCompile
+  autocmd FileType go nmap <leader>b :<C-u>call <SID>build_go_files()<CR>
+
+  " :GoTest
+  autocmd FileType go nmap <leader>t  <Plug>(go-test)
+
+  " :GoRun
+  autocmd FileType go nmap <leader>r  <Plug>(go-run)
+
+  " :GoDoc
+  autocmd FileType go nmap <Leader>d <Plug>(go-doc)
+  autocmd FileType go nmap <Leader>gv <Plug>(go-doc-vertical)
+  autocmd FileType go nmap <Leader>gb <Plug>(go-doc-browser)
+
+  " :GoCoverageToggle
+  autocmd FileType go nmap <Leader>c <Plug>(go-coverage-toggle)
+
+  " :GoInfo
+  autocmd FileType go nmap <Leader>i <Plug>(go-info)
+
+  " :GoMetaLinter
+  autocmd FileType go nmap <Leader>l <Plug>(go-metalinter)
+
+  " :GoDef but opens in a vertical split
+  autocmd FileType go nmap <Leader>v <Plug>(go-def-vertical)
+  " :GoDef but opens in a horizontal split
+  autocmd FileType go nmap <Leader>dt <Plug>(go-def-tab)
+
+  autocmd FileType go nmap <Leader>s <Plug>(go-implements)
+
+  autocmd FileType go nmap <Leader>e <Plug>(go-rename)
+  
+  "vim-go-extra
+  autocmd FileType go autocmd BufWritePre <buffer> Fmt
+
+  " :GoAlternate  commands :A, :AV, :AS and :AT
+  autocmd Filetype go command! -bang A call go#alternate#Switch(<bang>0, 'edit')
+  autocmd Filetype go command! -bang AV call go#alternate#Switch(<bang>0, 'vsplit')
+  autocmd Filetype go command! -bang AS call go#alternate#Switch(<bang>0, 'split')
+  autocmd Filetype go command! -bang AT call go#alternate#Switch(<bang>0, 'tabe')
+augroup END
+
+function! s:build_go_files()
+    let l:file = expand('%')
+    if l:file =~# '^\f\+_test\.go$'
+        call go#cmd#Test(0, 1)
+    elseif l:file =~# '^\f\+\.go$'
+        call go#cmd#Build(0)
+    endif
+endfunction
