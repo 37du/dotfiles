@@ -20,6 +20,7 @@ Plugin 'scrooloose/nerdtree'
 Plugin 'Xuyuanp/nerdtree-git-plugin'
 Plugin 'fatih/molokai'
 Plugin 'mileszs/ack.vim'
+Plugin 'ianva/vim-youdao-translater'
 
 call vundle#end()
 filetype plugin indent on
@@ -283,3 +284,6 @@ call NERDTreeHighlightFile('coffee', 'Red', 'none', 'red', '#151515')
 call NERDTreeHighlightFile('js', 'Red', 'none', '#ffa500', '#151515')
 call NERDTreeHighlightFile('php', 'Magenta', 'none', '#ff00ff', '#151515')
 
+""""""""""""""vim-youdao-translater"""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""""
+noremap <leader>yd :<C-u>Yde<CR>
