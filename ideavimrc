@@ -1,0 +1,12 @@
+set	 surround			" open vim-surround
+set	 gdefault      	 		" the ":substitute" flag 'g' is default on
+set	 history=200       	 		" number of command-lines that are remembered
+set	 hlsearch      	 		" highlight matches with last search pattern
+set	 ignorecase    	 		" ignore case in search patterns
+set	 incsearch     	 		" show where search pattern typed so far matches
+set	 showmode      	 		" message on status line to show current mode
+set	 smartcase     	 		" no ignore case when pattern has uppercase
+set	 visualbell    	 		" use visual bell instead of beeping
+set	 wrapscan      	 		" searches wrap around the end of the file
+
+" 注释掉 number 和 relativenumber（相对行数） 可能操作性能问题

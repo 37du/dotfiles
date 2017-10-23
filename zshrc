@@ -5,7 +5,7 @@ export ZSH=/Users/apple/.oh-my-zsh
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
-ZSH_THEME="robbyrussell"
+ZSH_THEME="agnoster"
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -50,6 +50,7 @@ ZSH_THEME="robbyrussell"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git)
+plugins=(tmuxinator)
 
 # User configuration
 
@@ -62,6 +63,20 @@ source $ZSH/oh-my-zsh.sh
 
 setopt noincappendhistory
 setopt nosharehistory
+
+# hide machine name from displaying in terminal
+prompt_context() {
+   if [[ "$USER" != "$DEFAULT_USER" || -n "$SSH_CLIENT" ]]; then
+       prompt_segment black default "%(!.%{%F{yellow}%}.)$USER"
+   fi
+}
+
+# use 256color
+[ -z "$TMUX" ] && export TERM=xterm-256color
+
+# ASOP CCACHE
+export USE_CCACHE=1
+
 
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
@@ -90,7 +105,3 @@ setopt nosharehistory
 
 export NVM_DIR="/Users/apple/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
-
-#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-export SDKMAN_DIR="/Users/apple/.sdkman"
-[[ -s "/Users/apple/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/apple/.sdkman/bin/sdkman-init.sh"
